@@ -1,0 +1,27 @@
+name: Monthly Streaming Check
+
+on:
+  schedule:
+    - cron: '0 9 7 * *'  # Runs at 9am UTC on the 7th of every month
+  workflow_dispatch:       # Also lets you run it manually from GitHub
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out the code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install requests beautifulsoup4 lxml
+
+      - name: Run the checker
+        env:
+          WATCHMODE_API_KEY: ${{ secrets.WATCHMODE_API_KEY }}
+        run: python checker.py
